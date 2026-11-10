@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Testseite – TSR Automation</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<style>
+:root{--bg:#0d0f12;--panel:#15181c;--line:rgba(255,255,255,.12);--text:#eeede8;--muted:#9a9da1;--yellow:#ffec00}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;display:grid;grid-template-columns:minmax(0,1fr) 340px;grid-template-rows:auto minmax(0,1fr);height:100vh;height:100dvh}
+header{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:12px 18px;background:var(--panel);border-bottom:1px solid var(--line)}
+h1{font-size:15px;font-weight:650;display:flex;align-items:center;gap:10px;margin-right:auto}
+h1 img{width:26px;height:26px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+button,select,a.btn{font:inherit;color:var(--text);background:#1f2328;border:1px solid var(--line);border-radius:8px;padding:7px 11px;cursor:pointer;text-decoration:none}
+button:hover,select:hover,a.btn:hover{border-color:rgba(255,255,255,.35)}
+button.on{background:var(--yellow);border-color:var(--yellow);color:#111;font-weight:600}
+button[disabled]{opacity:.4;cursor:not-allowed}
+#stage{display:flex;justify-content:center;align-items:flex-start;padding:22px;overflow:hidden;min-width:0;min-height:0}
+.shell{transform-origin:top center;flex:none}
+.phone{background:#050607;border-radius:42px;padding:40px 12px 26px;box-shadow:0 0 0 2px #2b2f35,0 30px 70px -30px rgba(0,0,0,.8)}
+.phone.tablet{border-radius:26px;padding:24px 20px}
+.phone.land{padding:12px 40px 12px 26px}
+.phone.pc{border-radius:10px;padding:8px}
+iframe{display:block;border:0;background:#08090a;border-radius:4px}
+.cap{margin-top:8px;text-align:center;color:var(--muted);font-size:12px}
+aside{background:var(--panel);border-left:1px solid var(--line);overflow:auto;padding:18px;min-height:0}
+h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:22px 0 10px}
+h2:first-child{margin-top:0}
+aside p{color:var(--muted);font-size:13px;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+label.f{display:block;font-size:12px;color:var(--muted);margin-bottom:8px}
+input[type=text],input[type=number],textarea{display:block;width:100%;margin-top:3px;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+textarea{min-height:70px;resize:vertical}
+.chk{display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px;cursor:pointer}
+.chk input{margin-top:3px;accent-color:var(--yellow);flex:none;width:16px;height:16px}
+.chk.done span{color:var(--muted);text-decoration:line-through}
+.bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin-bottom:8px}
+.bar i{display:block;height:100%;width:0;background:var(--yellow);transition:width .3s}
+.row{display:flex;gap:8px;margin-top:10px}
+.row>*{flex:1;text-align:center}
+@media (max-width:900px){
+  body{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;height:auto;min-height:100dvh}
+  header .desk{display:none}
+  #stage{padding:0;height:80dvh;display:block}
+  .shell,.phone{width:100% !important;height:100% !important;transform:none !important;padding:0 !important;border-radius:0;box-shadow:none}
+  iframe{width:100% !important;height:100% !important;border-radius:0}
+  .cap{display:none}
+  aside{border-left:0;border-top:1px solid var(--line)}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1><img src="assets/favicon.svg" alt="">TSR-Website: Testseite</h1>
+  <div class="seg desk" id="devices" role="group" aria-label="Gerät"></div>
+  <button type="button" id="rotate" class="desk" title="Hoch-/Querformat">⟳ Drehen</button>
+  <select id="page" aria-label="Seite">
+    <option value="index.html">Startseite</option>
+    <option value="en.html">Startseite – English</option>
+    <option value="impressum.html">Impressum</option>
+    <option value="datenschutz.html">Datenschutz</option>
+  </select>
+  <button type="button" id="reload">↻ Neu laden</button>
+  <a class="btn" id="direct" href="index.html" target="_blank" rel="noopener">Website allein öffnen ↗</a>
+</header>
+<main id="stage"></main>
+<aside>
+  <h2>So geht's</h2>
+  <p>Oben ein Gerät wählen. Die Ansicht zeigt dieselbe Aufteilung und dasselbe Verhalten wie auf dem Gerät, nur verkleinert, damit sie auf den Bildschirm passt. Scrollen mit dem Mausrad, Wischen mit gedrückter Maustaste. Am Ende den Link trotzdem einmal auf einem echten Handy öffnen: Safari und das Gefühl mit dem Finger lassen sich am PC nicht nachbilden.</p>
+
+  <h2>Checkliste</h2>
+  <div class="bar"><i id="bar"></i></div>
+  <p id="count"></p>
+  <div id="list"></div>
+  <label class="f" style="margin-top:12px">Anmerkungen<textarea id="notes" placeholder="Was ist aufgefallen? Auf welchem Gerät?"></textarea></label>
+  <div class="row"><button type="button" id="copy">Ergebnis kopieren</button><button type="button" id="clear">Zurücksetzen</button></div>
+</aside>
+<script>
+const $ = s => document.querySelector(s);
+// sichtbare Fläche im Browser (Bildschirm minus Adress- und Statusleiste), Touch wie am echten Gerät
+const DEV = {
+  pc:     {w:1440, h:900,  name:'PC', cls:'pc'},
+  iphone: {w:393,  h:659,  name:'iPhone 15', touch:true},
+  se:     {w:375,  h:553,  name:'iPhone SE', touch:true},
+  pixel:  {w:412,  h:784,  name:'Android', touch:true},
+  ipad:   {w:810,  h:1010, name:'iPad', cls:'tablet', touch:true, noRotate:true},
+  ipadq:  {w:1080, h:740,  name:'iPad quer', cls:'tablet', touch:true, noRotate:true},
+};
+const CHECKS = [
+  'Startbildschirm: Logo sauber, geht nach wenigen Sekunden weg',
+  'Start-Videos laufen und wechseln, kein Mensch beim Schweißen zu sehen',
+  'Wort oben wechselt zwischen ABB, KUKA und FANUC',
+  'TSR-Buchstaben: Video dahinter läuft, beim Scrollen bleiben sie scharf',
+  'Menü oben: Klick springt flüssig zum Abschnitt, die Leiste bleibt sichtbar',
+  'Leistungen: Am PC seitlich, am Handy/iPad zum Wischen',
+  'Abschnitt 02: Rad dreht von selbst, und man sieht sofort, dass man es anfassen kann',
+  'Abschnitt 02: Ziehen/Wischen, Anklicken, Pfeile und Pause-Knopf funktionieren, man kann daran vorbeiscrollen',
+  'Abschnitt 02: Kategorie-Knöpfe springen zum richtigen Prozess',
+  'Abschnitt 04: Welt/Europa schalten, Linien sind durchgehend',
+  'Abschnitt 04: Airbus Hamburg steht in der Liste',
+  'Kontakt: Telefon und E-Mail stimmen, kein Fax, keine Anfahrt',
+  'Impressum und Datenschutz öffnen sich, Inhalte stimmen',
+  'Nirgends wackelt die Seite seitlich oder ist Text abgeschnitten',
+];
+const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch (e) { return d; } };
+const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+
+/* ===== Geräte ===== */
+const state = {page:'index.html', device:'pc', land:false};
+$('#devices').innerHTML = Object.entries(DEV).map(([k,d]) => `<button type="button" data-d="${k}">${d.name}</button>`).join('');
+$('#devices').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; state.device = b.dataset.d; state.land = false; render(); });
+$('#rotate').onclick = () => { state.land = !state.land; render(); };
+$('#page').onchange = e => { state.page = e.target.value; render(); };
+$('#reload').onclick = () => render();
+function render(){
+  const d = DEV[state.device], narrow = innerWidth <= 900;
+  try { sessionStorage.removeItem('tsr-intro'); } catch (e) {} // jedes Mal wie beim ersten Besuch
+  const w = state.land ? d.h : d.w, h = state.land ? d.w : d.h;
+  document.querySelectorAll('#devices button').forEach(b => b.classList.toggle('on', b.dataset.d === state.device));
+  $('#rotate').disabled = !!d.noRotate || state.device === 'pc';
+  $('#rotate').classList.toggle('on', state.land);
+  $('#direct').href = state.page;
+  $('#stage').innerHTML = `<div class="shell" id="shell"><div class="phone ${d.cls || ''} ${state.land ? 'land' : ''}"><iframe id="site" name="${d.touch && !narrow ? 'tsr-touch' : 'tsr-pc'}" title="TSR-Website" allow="autoplay" width="${w}" height="${h}" src="${state.page}"></iframe></div><div class="cap">${d.name} · ${w} × ${h}</div></div>`;
+  if (!narrow) fit();
+}
+function fit(){
+  const s = $('#shell'); if (!s || innerWidth <= 900) return;
+  s.style.transform = 'none';
+  const st = $('#stage'), k = Math.min(1, (st.clientWidth - 44) / s.offsetWidth, (st.clientHeight - 44) / s.offsetHeight);
+  s.style.transform = `scale(${k})`;
+}
+addEventListener('resize', fit);
+
+/* ===== Checkliste (bleibt nur in diesem Browser gespeichert) ===== */
+let done = load('tsr-test-done', []);
+$('#notes').value = load('tsr-test-notes', '');
+function drawList(){
+  $('#list').innerHTML = CHECKS.map((c,i) => `<label class="chk ${done.includes(i) ? 'done' : ''}"><input type="checkbox" data-i="${i}" ${done.includes(i) ? 'checked' : ''}><span>${c}</span></label>`).join('');
+  $('#count').textContent = `${done.length} von ${CHECKS.length} geprüft`;
+  $('#bar').style.width = done.length / CHECKS.length * 100 + '%';
+}
+$('#list').addEventListener('change', e => { const i = +e.target.dataset.i; done = e.target.checked ? [...done, i] : done.filter(x => x !== i); save('tsr-test-done', done); drawList(); });
+$('#notes').addEventListener('input', e => save('tsr-test-notes', e.target.value));
+$('#clear').onclick = () => { done = []; $('#notes').value = ''; save('tsr-test-done', done); save('tsr-test-notes', ''); drawList(); };
+$('#copy').onclick = async () => {
+  const txt = 'TSR-Website Test\n\n' + CHECKS.map((c,i) => (done.includes(i) ? '[x] ' : '[ ] ') + c).join('\n') + ($('#notes').value ? '\n\nAnmerkungen:\n' + $('#notes').value : '');
+  const b = $('#copy');
+  try { await navigator.clipboard.writeText(txt); b.textContent = 'Kopiert ✓'; } catch (e) { b.textContent = 'Kopieren nicht möglich'; }
+  setTimeout(() => { b.textContent = 'Ergebnis kopieren'; }, 2000);
+};
+drawList();
+render();
+</script>
+</body>
+</html>
