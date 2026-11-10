@@ -37,6 +37,7 @@ main{padding:clamp(70px,10vw,140px) 0 clamp(80px,10vw,140px)}
 .idx::before{content:"";width:30px;height:1px;background:var(--yellow)}
 h1{font-size:clamp(44px,7vw,110px);font-stretch:116%;font-weight:780;letter-spacing:-.035em;line-height:.95;margin-bottom:clamp(50px,7vw,90px)}
 h1 .y{color:var(--yellow)}
+@media (max-width:370px){h1{font-size:36px}}
 .legal{display:grid;grid-template-columns:minmax(0,260px) minmax(0,760px);gap:clamp(30px,6vw,100px)}
 .toc{position:sticky;top:110px;align-self:start;list-style:none;border-top:1px solid var(--line-2)}
 .toc a{display:block;padding:12px 0;border-bottom:1px solid var(--line);color:var(--muted);text-decoration:none;font-size:14px;transition:color .3s,padding .4s var(--ease)}
@@ -62,6 +63,7 @@ footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px}
 footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-top:30px;padding-bottom:30px}
 footer nav{display:flex;gap:24px}
 footer a{text-decoration:none}
+footer a[href^="mailto"]{white-space:nowrap}
 footer a:hover,footer a.on{color:var(--yellow)}
 .js .rv{opacity:0;transform:translateY(24px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
 .js .rv.in{opacity:1;transform:none}
@@ -146,7 +148,7 @@ footer a:hover,footer a.on{color:var(--yellow)}
 </main>
 <footer>
   <div class="wrap">
-    <span>© <span id="yr">2026</span> TSR Automation GmbH &amp; Co. KG · Großer Esch 18 · 49716 Meppen</span>
+    <span>© <span id="yr">2026</span> TSR Automation GmbH &amp; Co. KG · Großer Esch 18 · 49716 Meppen · <a href="mailto:t.schulte@tsr-automation.de">t.schulte@tsr-automation.de</a></span>
     <nav><a href="impressum.html" data-p="impressum">Impressum</a><a href="datenschutz.html" data-p="datenschutz">Datenschutz</a><a href="index.html">Startseite</a></nav>
   </div>
 </footer>
